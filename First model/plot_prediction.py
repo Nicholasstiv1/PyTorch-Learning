@@ -19,3 +19,17 @@ def plot_predictions(
 
     plt.legend(prop={"size": 14})
     plt.show()
+
+
+def plot_loss_curves(epoch_count, loss_values, test_loss_values):
+    plt.figure(figsize=(10, 7))
+
+    plt.plot(epoch_count, loss_values, label="Train loss")
+    plt.plot(epoch_count, test_loss_values, label="Test loss")
+
+    plt.title("Training and test loss curves")
+    plt.ylabel("Loss")
+    plt.xlabel("Epochs")
+    plt.legend(prop={"size": 14})
+
+    plt.show()
