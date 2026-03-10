@@ -12,7 +12,7 @@ X_train, y_train, X_test, y_test = train_split()
 loss_fn = nn.L1Loss()
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
-epochs = 250
+epochs = 100
 
 # 0. Loop through the data
 for epoch in range(epochs):
@@ -23,7 +23,7 @@ for epoch in range(epochs):
 
     # 2. Calculate the loss (how different are the model's predictions to the true values)
     loss = loss_fn(y_pred, y_train)
-    print(f"Loss: {loss}")
+
     # 3. Zero the gradients of the optimizer (they accumulate by default)
     optimizer.zero_grad()
 
@@ -33,8 +33,15 @@ for epoch in range(epochs):
     # 5. Step the optimizer (perform gradient descent)
     optimizer.step()  # by default how the optimizer changes will accumulate through the loop so we have to zero them above in step 3 for the next iteration of the loop
 
-    print(model_0.state_dict())
+    model_0.eval()  # turns off different settings in the model not needed for evaluation/testing (dropout/batchnNorm layers)
+    with torch.inference_mode():  # turns off gradient tracking
+        # 1. Do the forward pass
+        test_pred = model_0(X_test)
 
-    model_0.eval()  # turns off gradient tracking
+        # 2. Calculate the loss
+        test_loss = loss_fn(test_pred, y_test)
+    if epoch % 10 == 0:
+        print(f"Epoch: {epoch} | Loss: {loss} | Test loss: {test_loss}")
+        print(model_0.state_dict())
 
 making_predictions(model_0, X_train, y_train, X_test, y_test)
