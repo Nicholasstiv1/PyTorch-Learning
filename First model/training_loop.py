@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import torch
 from linear_regression_model import LinearRegressionModel
@@ -58,6 +60,22 @@ for epoch in range(epochs):
 
 making_predictions(model_0, X_train, y_train, X_test, y_test)
 
-# np.array(torch.tensor(loss_values).numpy())
 loss_values_np = torch.stack(loss_values).detach().numpy()
 plot_loss_curves(epoch_count, loss_values_np, test_loss_values)
+
+# Saving the model
+
+# 1. Create models directory
+
+model_path = Path("models")
+model_path.mkdir(parents=True, exist_ok=True)
+
+# 2. Create model save path
+
+model_name = "model_0.pth"
+model_save_path = model_path / model_name
+
+# 3. Save the model state dict
+
+print(f"Saving model to: {model_save_path}")
+torch.save(obj=model_0.state_dict(), f=model_save_path)
