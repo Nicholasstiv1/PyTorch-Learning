@@ -1,19 +1,20 @@
 import torch
-from CircleModel import CircleModel
+from CircleModel import CircleModel, CircleModelV1
 from data import random_split
 from torch import nn
 from utils.accuracyFunction import accuracy_fn
 
 torch.manual_seed(42)
+torch.cuda.manual_seed(42)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model_0 = CircleModel().to(device)
+model_0 = CircleModelV1().to(device)
 
 loss_fn = nn.BCEWithLogitsLoss()  # Sigmoid activation function built-in
 
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.1)
 
-epochs = 100
+epochs = 1000
 
 # Put data to target device
 X_train, X_test, y_train, y_test = random_split()
@@ -55,7 +56,7 @@ for epoch in range(epochs):
         test_acc = accuracy_fn(y_true=y_test, y_pred=test_pred)
 
     # Print out what's happening
-    if epoch % 10 == 0:
+    if epoch % 100 == 0:
         print(
             f"Epoch: {epoch} | Loss: {loss:.5f}, Acc: {acc:.2f}% | Test Loss: {test_loss:.5f}, Test Acc: {test_acc:.2f}%"
         )
