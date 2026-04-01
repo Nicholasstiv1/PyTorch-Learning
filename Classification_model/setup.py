@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import torch
-from CircleModel import CircleModel, CircleModelV1, CircleModelV2
+from CircleModel import CircleModelV2
 from data import random_split
 from torch import nn
 from utils.accuracyFunction import accuracy_fn
