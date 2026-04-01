@@ -1,4 +1,3 @@
-import torch
 from torch import nn
 
 # device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -31,5 +30,22 @@ class CircleModelV1(nn.Module):
     def forward(self, x):
         z = self.layer_1(x)
         z = self.layer_2(z)
+        z = self.layer_3(z)
+        return z
+
+
+class CircleModelV2(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layer_1 = nn.Linear(in_features=2, out_features=10)
+        self.layer_2 = nn.Linear(in_features=10, out_features=10)
+        self.layer_3 = nn.Linear(in_features=10, out_features=1)
+        self.relu = nn.ReLU()  # Non-linear activation function
+
+    def forward(self, x):
+        z = self.layer_1(x)
+        z = self.relu(z)
+        z = self.layer_2(z)
+        z = self.relu(z)
         z = self.layer_3(z)
         return z

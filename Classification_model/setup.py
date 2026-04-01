@@ -1,25 +1,27 @@
+import matplotlib.pyplot as plt
 import torch
-from CircleModel import CircleModel, CircleModelV1
+from CircleModel import CircleModel, CircleModelV1, CircleModelV2
 from data import random_split
 from torch import nn
 from utils.accuracyFunction import accuracy_fn
+from utils.helper import plot_decision_boundary
 
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model_0 = CircleModelV1().to(device)
+model_0 = CircleModelV2().to(device)
 
 loss_fn = nn.BCEWithLogitsLoss()  # Sigmoid activation function built-in
 
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.1)
 
-epochs = 1000
-
 # Put data to target device
 X_train, X_test, y_train, y_test = random_split()
 X_train, X_test = X_train.to(device), X_test.to(device)
 y_train, y_test = y_train.to(device), y_test.to(device)
+
+epochs = 5000
 
 # Build training and evaluation loop
 for epoch in range(epochs):
@@ -60,3 +62,16 @@ for epoch in range(epochs):
         print(
             f"Epoch: {epoch} | Loss: {loss:.5f}, Acc: {acc:.2f}% | Test Loss: {test_loss:.5f}, Test Acc: {test_acc:.2f}%"
         )
+
+model_0.eval()
+with torch.inference_mode():
+    y_preds = torch.round(torch.sigmoid(model_0(X_test))).squeeze()
+
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.title("Train")
+plot_decision_boundary(model_0, X_train, y_train)
+plt.subplot(1, 2, 2)
+plt.title("Test")
+plot_decision_boundary(model_0, X_test, y_test)
+plt.show()

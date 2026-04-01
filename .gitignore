@@ -1,4 +1,5 @@
 pyrightconfig.json
-test*.py
+test*
 __pycache__/
 .zed
+/questions
